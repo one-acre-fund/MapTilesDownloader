@@ -1,4 +1,8 @@
 src/output/
 src/temp/
 __pycache__
+<<<<<<< HEAD
 open_map.html
+=======
+open_map.html
+>>>>>>> 79e01aa38014c2ca412d6e5deb69f6d955eb37b0
