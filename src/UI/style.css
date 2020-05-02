@@ -34,9 +34,9 @@ html, body {
 }
 
 .bottom-button {
-	position: absolute;
-	bottom: 20px;
-	left: 60px;
+	position: relative;
+	bottom: 0px;
+	left: 40px;
 	width: 260px;
 	display: block;
 }
