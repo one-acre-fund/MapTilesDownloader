@@ -229,8 +229,8 @@ def run():
 	print('Running Server...')
 
 	# os.startfile('UI\\index.htm', 'open')
-	print("Open http://localhost:8080/ to view the application.")
-
+	print("Opening http://localhost:8080/ to view the application.")
+	os.startfile('http://localhost:8080/', 'open')
 	httpd.serve_forever()
  
 run()
