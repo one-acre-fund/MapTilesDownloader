@@ -48,7 +48,8 @@ $(function() {
 
 		map = new mapboxgl.Map({
 			container: 'map-view',
-			style: 'mapbox://styles/aliashraf/ck6lw9nr80lvo1ipj8zovttdx',
+			//style: 'mapbox://styles/aliashraf/ck6lw9nr80lvo1ipj8zovttdx',
+			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [-73.983652, 40.755024], 
 			zoom: 12
 		});
