@@ -21,6 +21,8 @@ import os
 import base64
 import math
 
+import requests
+
 from PIL import Image
 
 class Utils:
@@ -124,14 +126,16 @@ class Utils:
 		ssl._create_default_https_context = ssl._create_unverified_context
 
 		try:
-			path, response = urllib.request.urlretrieve(url, destination)
-			code = 200
-		except urllib.error.URLError as e:
-			if not hasattr(e, "code"):
-				print(e)
-				code = -1
-			else:
-				code = e.code
+			r = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0"})
+			code = r.status_code
+			
+			if code == 200:
+				with open(destination, "wb") as f:
+					f.write(r.content)
+					
+		except Exception as e:
+			print(e)
+			code = -1
 
 		return code
 
