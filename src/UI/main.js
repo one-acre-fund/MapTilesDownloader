@@ -61,14 +61,24 @@ $(function() {
 
 		map = new mapboxgl.Map({
 			container: 'map-view',
-			//style: 'mapbox://styles/aliashraf/ck6lw9nr80lvo1ipj8zovttdx',
-			style: 'mapbox://styles/mapbox/streets-v11',
-			center: [-73.983652, 40.755024], 
-			zoom: 12
+			style: 'mapbox://styles/mapbox/satellite-streets-v11',
+			center: [15,0],
+			zoom: 3
 		});
 
 		geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
-		var control = map.addControl(geocoder);
+		map.addControl(geocoder);
+    map.addControl(new mapboxgl.GeolocateControl());
+    map.addControl(new mapboxgl.ScaleControl());
+
+    const layerList = document.getElementById('style-selector');
+    const inputs = layerList.getElementsByTagName('input');
+    for (const input of inputs) {
+      input.onclick = (layer) => {
+        const layerId = layer.target.id;
+        map.setStyle('mapbox://styles/mapbox/' + layerId);
+      };
+    }
 	}
 
 	function initializeMaterialize() {

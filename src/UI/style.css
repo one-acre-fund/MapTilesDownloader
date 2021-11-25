@@ -178,3 +178,11 @@ hr {
 	overflow-wrap: normal;
 	overflow-x: scroll;
 }
+
+#style-selector {
+  position: absolute;
+  top: 0;
+  background: #efefef;
+  padding: 2px;
+  font-family: 'Open Sans', sans-serif;
+}
