@@ -28,6 +28,7 @@ $(function() {
 		"Open Street Maps": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
 		"Open Cycle Maps": "http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
 		"Open PT Transport": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
+		"CyclOSM": "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
 
 		"div-3": "",
 
