@@ -193,7 +193,7 @@ $(function() {
             id: 'tiles',
             type: 'raster',
             source: $(this).find("a").text(),
-          });
+          }, 'grid-preview');
         }
 			})
 
@@ -552,16 +552,13 @@ $(function() {
 		clearLogs();
 		M.Toast.dismissAll();
 
-		var timestamp = Date.now().toString();
+		var timestamp = new Date().toISOString().replace(/[^\w]/,'_');
 
 		var allTiles = getAllGridTiles();
 		updateProgress(0, allTiles.length);
 
 		var numThreads = parseInt($("#parallel-threads-box").val());
 		var outputDirectory = $("#output-directory-box").val();
-    if('{timestamp}' == outputDirectory) {
-        outputDirectory = new Date().toISOString();
-    }
 		var outputFile = $("#output-file-box").val();
 		var outputType = $("#output-type").val();
 		var outputScale = $("#output-scale").val();

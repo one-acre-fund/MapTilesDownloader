@@ -64,7 +64,7 @@ class serverHandler(BaseHTTPRequestHandler):
             y = int(postvars['y'][0])
             z = int(postvars['z'][0])
             quad = str(postvars['quad'][0])
-            timestamp = int(postvars['timestamp'][0])
+            timestamp = str(postvars['timestamp'][0])
             outputDirectory = str(postvars['outputDirectory'][0])
             outputFile = str(postvars['outputFile'][0])
             outputType = str(postvars['outputType'][0])
@@ -137,7 +137,7 @@ class serverHandler(BaseHTTPRequestHandler):
             outputFile = str(postvars['outputFile'][0])
             minZoom = int(postvars['minZoom'][0])
             maxZoom = int(postvars['maxZoom'][0])
-            timestamp = int(postvars['timestamp'][0])
+            timestamp = str(postvars['timestamp'][0])
             bounds = str(postvars['bounds'][0])
             boundsArray = map(float, bounds.split(","))
             center = str(postvars['center'][0])
@@ -145,6 +145,8 @@ class serverHandler(BaseHTTPRequestHandler):
 
             replaceMap = {
                 "timestamp": str(timestamp),
+                "minZoom": str(minZoom),
+                "maxZoom": str(maxZoom),
             }
 
             for key, value in replaceMap.items():
@@ -175,7 +177,7 @@ class serverHandler(BaseHTTPRequestHandler):
             outputFile = str(postvars['outputFile'][0])
             minZoom = int(postvars['minZoom'][0])
             maxZoom = int(postvars['maxZoom'][0])
-            timestamp = int(postvars['timestamp'][0])
+            timestamp = str(postvars['timestamp'][0])
             bounds = str(postvars['bounds'][0])
             boundsArray = map(float, bounds.split(","))
             center = str(postvars['center'][0])
