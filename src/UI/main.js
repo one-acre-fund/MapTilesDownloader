@@ -430,7 +430,7 @@ $(function() {
 		$("#download-button").click(startDownloading)
 		$("#stop-button").click(stopDownloading)
 
-		var timestamp = Date.now().toString();
+		var timestamp = new Date().toISOString();
 		//$("#output-directory-box").val(timestamp)
 	}
 
