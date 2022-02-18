@@ -145,7 +145,15 @@ $(function() {
             id: 'tiles',
             type: 'raster',
             source: sources[0].name,
-          }
+          },
+          // fake invisible layer to use as a constant id for layer ordering
+          {
+            id: 'base',
+            type: 'background',
+            layout: {
+              visibility: 'none',
+            },
+          },
         ]
       },
     });
@@ -193,7 +201,7 @@ $(function() {
             id: 'tiles',
             type: 'raster',
             source: $(this).find("a").text(),
-          }, 'grid-preview');
+          }, 'base');
         }
 			})
 
