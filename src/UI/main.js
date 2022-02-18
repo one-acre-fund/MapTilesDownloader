@@ -10,75 +10,154 @@ $(function() {
 	var cancellationToken = null;
 	var requests = [];
 
-	var sources = {
+	var sources = [
+    {
+      name: "Open Street Maps",
+      url: "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Open Cycle Maps",
+      url: "http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Open PT Transport",
+      url: "http://openptmap.org/tiles/{z}/{x}/{y}.png",
+    },
+		{
+      name: "CyclOSM",
+      url: "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+    },
+    
+		{
+      name: "div-2",
+      url: "",
+    },
 
-		"Bing Maps Streets": "http://ecn.t0.tiles.virtualearth.net/tiles/r{quad}.jpeg?g=129&mkt=en&stl=H",
-		"Bing Maps Satellite": "http://ecn.t0.tiles.virtualearth.net/tiles/a{quad}.jpeg?g=129&mkt=en&stl=H",
-		"Bing Maps Hybrid": "http://ecn.t0.tiles.virtualearth.net/tiles/h{quad}.jpeg?g=129&mkt=en&stl=H",
+    {
+      name: "Google Maps",
+      url: "https://mt0.google.com/vt?lyrs=m&x={x}&s=&y={y}&z={z}",
+    },
+		{
+      name: "Google Maps Satellite",
+      url: "https://mt0.google.com/vt?lyrs=s&x={x}&s=&y={y}&z={z}",
+    },
+		{
+      name: "Google Maps Hybrid",
+      url: "https://mt0.google.com/vt?lyrs=h&x={x}&s=&y={y}&z={z}",
+    },
+		{
+      name: "Google Maps Terrain",
+      url: "https://mt0.google.com/vt?lyrs=p&x={x}&s=&y={y}&z={z}",
+    },
 
-		"div-1B": "",
+		{
+      name: "div-3",
+      url: "",
+    },
+    {
+      name: "MapBox Streets",
+      url: "http://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
+    },
+		{
+      name: "MapBox Satellite",
+      url: "http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
+    },
+		{
+      name: "div-4",
+      url: "",
+    },
 
-		"Google Maps": "https://mt0.google.com/vt?lyrs=m&x={x}&s=&y={y}&z={z}",
-		"Google Maps Satellite": "https://mt0.google.com/vt?lyrs=s&x={x}&s=&y={y}&z={z}",
-		"Google Maps Hybrid": "https://mt0.google.com/vt?lyrs=h&x={x}&s=&y={y}&z={z}",
-		"Google Maps Terrain": "https://mt0.google.com/vt?lyrs=p&x={x}&s=&y={y}&z={z}",
-
-		"div-2": "",
-
-		"Open Street Maps": "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-		"Open Cycle Maps": "http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-		"Open PT Transport": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
-		"CyclOSM": "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
-
-		"div-3": "",
-
-		"MapBox Streets" : "http://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
-		"MapBox Satellite" : "http://api.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
-
-		"div-4": "",
-
-		"ESRI World Imagery": "http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-		"Wikimedia Maps": "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
-		"NASA GIBS": "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg",
+		{
+      name: "ESRI World Imagery",
+      url: "http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    },
+		{
+      name: "Wikimedia Maps",
+      url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
+    },
+		{
+      name: "NASA GIBS",
+      url: "https://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_CorrectedReflectance_TrueColor/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg",
+    },
 		
-		"div-5": "",
-		"Carto Light": "http://cartodb-basemaps-c.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-		"Stamen Toner B&W": "http://a.tile.stamen.com/toner/{z}/{x}/{y}.png",
-		"Stamen Water Color" : "http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
-		
-		"div-6": "",
-		"Mapnik No Labels" : "https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png",
-		"Hillshading" : "http://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png",
-		"Mapnik Black/White" : "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",
-		"Thunderforest Landscape" : "http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
-
-
-	};
+		{
+      name: "div-5",
+      url: "",
+    },
+		{
+      name: "Carto Light",
+      url: "http://cartodb-basemaps-c.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Stamen Toner B&W",
+      url: "http://a.tile.stamen.com/toner/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Stamen Water Color",
+      url: "http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+    },		
+		{
+      name: "div-6",
+      url: "",
+    },
+		{
+      name: "Mapnik No Labels",
+      url: "https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Hillshading",
+      url: "http://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Mapnik Black/White",
+      url: "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",
+    },
+		{
+      name: "Thunderforest Landscape",
+      url: "http://tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
+    },
+  ];
 
 	function initializeMap() {
 
 		mapboxgl.accessToken = 'pk.eyJ1IjoiYWxpYXNocmFmIiwiYSI6ImNqdXl5MHV5YTAzNXI0NG51OWFuMGp4enQifQ.zpd2gZFwBTRqiapp1yci9g';
+    const mb_sources = {};
+    sources.forEach(function(source) {
+      if(source.url) {
+        mb_sources[source.name] = {
+          type: 'raster',
+          tiles: [
+            source.url,
+          ]
+        };
+      }
+    });
 
 		map = new mapboxgl.Map({
 			container: 'map-view',
-			style: 'mapbox://styles/mapbox/satellite-streets-v11',
 			center: [15,0],
-			zoom: 3
-		});
+			zoom: 3,
+      style: {
+        version: 8,
+        sources: mb_sources,
+        layers: [
+          {
+            id: 'tiles',
+            type: 'raster',
+            source: sources[0].name,
+          }
+        ]
+      },
+    });
 
 		geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
 		map.addControl(geocoder);
     map.addControl(new mapboxgl.GeolocateControl());
     map.addControl(new mapboxgl.ScaleControl());
 
-    const layerList = document.getElementById('style-selector');
-    const inputs = layerList.getElementsByTagName('input');
-    for (const input of inputs) {
-      input.onclick = (layer) => {
-        const layerId = layer.target.id;
-        map.setStyle('mapbox://styles/mapbox/' + layerId);
-      };
-    }
+    map.on('zoomend', () => {
+      $('#zoom-level').text('Zoom: ' + map.getZoom().toFixed(0));
+    });
 	}
 
 	function initializeMaterialize() {
@@ -92,8 +171,9 @@ $(function() {
 
 		var dropdown = $("#sources");
 
-		for(var key in sources) {
-			var url = sources[key];
+		for(var source of sources) {
+      var name = source['name']
+			var url = source['url'];
 
 			if(url == "") {
 				dropdown.append("<hr/>");
@@ -102,11 +182,19 @@ $(function() {
 
 			var item = $("<li><a></a></li>");
 			item.attr("data-url", url);
-			item.find("a").text(key);
+			item.find("a").text(name);
 
 			item.click(function() {
 				var url = $(this).attr("data-url");
 				$("#source-box").val(url);
+        if(map) {
+          if (map.getLayer('tiles')) map.removeLayer('tiles');
+          map.addLayer({
+            id: 'tiles',
+            type: 'raster',
+            source: $(this).find("a").text(),
+          });
+        }
 			})
 
 			dropdown.append(item);
@@ -197,7 +285,6 @@ $(function() {
             .addTo(map);
 
         console.log(e.lngLat)
-
 	}
 
 	function long2tile(lon,zoom) {
@@ -430,7 +517,7 @@ $(function() {
 		$("#download-button").click(startDownloading)
 		$("#stop-button").click(stopDownloading)
 
-		var timestamp = new Date().toISOString();
+		var timestamp = Date.now().toString();
 		//$("#output-directory-box").val(timestamp)
 	}
 
@@ -465,13 +552,16 @@ $(function() {
 		clearLogs();
 		M.Toast.dismissAll();
 
-		var timestamp = new Date().toISOString();
+		var timestamp = Date.now().toString();
 
 		var allTiles = getAllGridTiles();
 		updateProgress(0, allTiles.length);
 
 		var numThreads = parseInt($("#parallel-threads-box").val());
 		var outputDirectory = $("#output-directory-box").val();
+    if('{timestamp}' == outputDirectory) {
+        outputDirectory = new Date().toISOString();
+    }
 		var outputFile = $("#output-file-box").val();
 		var outputType = $("#output-type").val();
 		var outputScale = $("#output-scale").val();

@@ -179,7 +179,7 @@ hr {
 	overflow-x: scroll;
 }
 
-#style-selector {
+#zoom-level {
   position: absolute;
   top: 0;
   background: #efefef;
