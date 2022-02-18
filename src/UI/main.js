@@ -465,7 +465,7 @@ $(function() {
 		clearLogs();
 		M.Toast.dismissAll();
 
-		var timestamp = Date.now().toString();
+		var timestamp = new Date().toISOString();
 
 		var allTiles = getAllGridTiles();
 		updateProgress(0, allTiles.length);
