@@ -1,16 +1,16 @@
-var mapView;
+let mapView;
 
 $(function() {
 
-	var map = null;
-	var draw = null;
-	var geocoder = null;
-	var bar = null;
+	let map = null;
+	let draw = null;
+	let geocoder = null;
+	let bar = null;
 
-	var cancellationToken = null;
-	var requests = [];
+	let cancellationToken = null;
+	let requests = [];
 
-	var sources = [
+	let sources = [
     {
       name: "Open Street Maps",
       url: "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -177,23 +177,23 @@ $(function() {
 
 	function initializeSources() {
 
-		var dropdown = $("#sources");
+		let dropdown = $("#sources");
 
-		for(var source of sources) {
-      var name = source['name']
-			var url = source['url'];
+		for(let source of sources) {
+      let name = source['name']
+			let url = source['url'];
 
 			if(url == "") {
 				dropdown.append("<hr/>");
 				continue;
 			}
 
-			var item = $("<li><a></a></li>");
+			let item = $("<li><a></a></li>");
 			item.attr("data-url", url);
 			item.find("a").text(name);
 
 			item.click(function() {
-				var url = $(this).attr("data-url");
+				let url = $(this).attr("data-url");
 				$("#source-box").val(url);
         if(map) {
           if (map.getLayer('tiles')) map.removeLayer('tiles');
@@ -211,7 +211,7 @@ $(function() {
 
 	function initializeSearch() {
 		$("#search-form").submit(function(e) {
-			var location = $("#location-box").val();
+			let location = $("#location-box").val();
 			geocoder.query(location);
 
 			e.preventDefault();
@@ -224,9 +224,9 @@ $(function() {
 			$("#more-options").toggle();
 		})
 
-		var outputFileBox = $("#output-file-box")
+		let outputFileBox = $("#output-file-box")
 		$("#output-type").change(function() {
-			var outputType = $("#output-type").val();
+			let outputType = $("#output-type").val();
 			if(outputType == "mbtiles") {
 				outputFileBox.val("tiles.mbtiles")
 			} else if(outputType == "repo") {
@@ -240,7 +240,7 @@ $(function() {
 
 	function initializeRectangleTool() {
 		
-		var modes = MapboxDraw.modes;
+		let modes = MapboxDraw.modes;
 		modes.draw_rectangle = DrawRectangle.default;
 
 		draw = new MapboxDraw({
@@ -279,12 +279,12 @@ $(function() {
 			return;
 		}
 
-		var maxZoom = getMaxZoom();
+		let maxZoom = getMaxZoom();
 
-		var x = lat2tile(e.lngLat.lat, maxZoom);
-		var y = long2tile(e.lngLat.lng, maxZoom);
+		let x = lat2tile(e.lngLat.lat, maxZoom);
+		let y = long2tile(e.lngLat.lng, maxZoom);
 
-		var content = "X, Y, Z<br/><b>" + x + ", " + y + ", " + maxZoom + "</b><hr/>";
+		let content = "X, Y, Z<br/><b>" + x + ", " + y + ", " + maxZoom + "</b><hr/>";
 		content += "Lat, Lng<br/><b>" + e.lngLat.lat + ", " + e.lngLat.lng + "</b>";
 
         new mapboxgl.Popup()
@@ -308,14 +308,14 @@ $(function() {
 	}
 
 	function tile2lat(y,z) {
-		var n=Math.PI-2*Math.PI*y/Math.pow(2,z);
+		let n=Math.PI-2*Math.PI*y/Math.pow(2,z);
 		return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
 	}
 
 	function getTileRect(x, y, zoom) {
 
-		var c1 = new mapboxgl.LngLat(tile2long(x, zoom), tile2lat(y, zoom));
-		var c2 = new mapboxgl.LngLat(tile2long(x + 1, zoom), tile2lat(y + 1, zoom));
+		let c1 = new mapboxgl.LngLat(tile2long(x, zoom), tile2lat(y, zoom));
+		let c2 = new mapboxgl.LngLat(tile2long(x + 1, zoom), tile2lat(y + 1, zoom));
 
 		return new mapboxgl.LngLatBounds(c1, c2);
 	}
@@ -330,33 +330,29 @@ $(function() {
 
 	function getArrayByBounds(bounds) {
 
-		var tileArray = [
+		return [
 			[ bounds.getSouthWest().lng, bounds.getNorthEast().lat ],
 			[ bounds.getNorthEast().lng, bounds.getNorthEast().lat ],
 			[ bounds.getNorthEast().lng, bounds.getSouthWest().lat ],
 			[ bounds.getSouthWest().lng, bounds.getSouthWest().lat ],
 			[ bounds.getSouthWest().lng, bounds.getNorthEast().lat ],
 		];
-
-		return tileArray;
 	}
 
 	function getPolygonByBounds(bounds) {
 
-		var tilePolygonData = getArrayByBounds(bounds);
+		let tilePolygonData = getArrayByBounds(bounds);
 
-		var polygon = turf.polygon([tilePolygonData]);
-
-		return polygon;
+		return turf.polygon([tilePolygonData]);
 	}
 
 	function isTileInSelection(tileRect) {
 
-		var polygon = getPolygonByBounds(tileRect);
+		let polygon = getPolygonByBounds(tileRect);
 
-		var areaPolygon = draw.getAll().features[0];
+		let areaPolygon = draw.getAll().features[0];
 
-		if(turf.booleanDisjoint(polygon, areaPolygon) == false) {
+		if(! turf.booleanDisjoint(polygon, areaPolygon)) {
 			return true;
 		}
 
@@ -365,34 +361,30 @@ $(function() {
 
 	function getBounds() {
 
-		var coordinates = draw.getAll().features[0].geometry.coordinates[0];
+		let coordinates = draw.getAll().features[0].geometry.coordinates[0];
 
-		var bounds = coordinates.reduce(function(bounds, coord) {
+		return coordinates.reduce(function(bounds, coord) {
 			return bounds.extend(coord);
 		}, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
-
-		return bounds;
-	}
+  }
 
 	function getGrid(zoomLevel) {
 
-		var bounds = getBounds();
+		let bounds = getBounds();
 
-		var rects = [];
+		let rects = [];
 
-		var outputScale = $("#output-scale").val();
-		//var thisZoom = zoomLevel - (outputScale-1)
-		var thisZoom = zoomLevel
+		let thisZoom = zoomLevel
 
-		var TY    = lat2tile(bounds.getNorthEast().lat, thisZoom);
-		var LX   = long2tile(bounds.getSouthWest().lng, thisZoom);
-		var BY = lat2tile(bounds.getSouthWest().lat, thisZoom);
-		var RX  = long2tile(bounds.getNorthEast().lng, thisZoom);
+		let TY    = lat2tile(bounds.getNorthEast().lat, thisZoom);
+		let LX   = long2tile(bounds.getSouthWest().lng, thisZoom);
+		let BY = lat2tile(bounds.getSouthWest().lat, thisZoom);
+		let RX  = long2tile(bounds.getNorthEast().lng, thisZoom);
 
-		for(var y = TY; y <= BY; y++) {
-			for(var x = LX; x <= RX; x++) {
+		for(let y = TY; y <= BY; y++) {
+			for(let x = LX; x <= RX; x++) {
 
-				var rect = getTileRect(x, y, thisZoom);
+				let rect = getTileRect(x, y, thisZoom);
 
 				if(isTileInSelection(rect)) {
 					rects.push({
@@ -410,10 +402,10 @@ $(function() {
 	}
 
 	function getAllGridTiles() {
-		var allTiles = [];
+		let allTiles = [];
 
-		for(var z = getMinZoom(); z <= getMaxZoom(); z++) {
-			var grid = getGrid(z);
+		for(let z = getMinZoom(); z <= getMaxZoom(); z++) {
+			let grid = getGrid(z);
 			// TODO shuffle grid via a heuristic (hamlet curve? :/)
 			allTiles = allTiles.concat(grid);
 		}
@@ -427,14 +419,14 @@ $(function() {
 
 	function previewGrid() {
 
-		var maxZoom = getMaxZoom();
-		var grid = getGrid(maxZoom);
+		let maxZoom = getMaxZoom();
+		let grid = getGrid(maxZoom);
 
-		var pointsCollection = []
+		let pointsCollection = []
 
-		for(var i in grid) {
-			var feature = grid[i];
-			var array = getArrayByBounds(feature.rect);
+		for(let i in grid) {
+			let feature = grid[i];
+			let array = getArrayByBounds(feature.rect);
 			pointsCollection.push(array);
 		}
 
@@ -454,16 +446,16 @@ $(function() {
 			}
 		});
 
-		var totalTiles = getAllGridTiles().length;
+		let totalTiles = getAllGridTiles().length;
 		M.toast({html: 'Total ' + totalTiles.toLocaleString() + ' tiles in the region.', displayLength: 5000})
 
 	}
 
 	function previewRect(rectInfo) {
 
-		var array = getArrayByBounds(rectInfo.rect);
+		let array = getArrayByBounds(rectInfo.rect);
 
-		var id = "temp-" + rectInfo.x + '-' + rectInfo.y + '-' + rectInfo.z;
+		let id = "temp-" + rectInfo.x + '-' + rectInfo.y + '-' + rectInfo.z;
 
 		map.addLayer({
 			'id': id,
@@ -490,20 +482,20 @@ $(function() {
 	}
 
 	function generateQuadKey(x, y, z) {
-	    var quadKey = [];
-	    for (var i = z; i > 0; i--) {
-	        var digit = '0';
-	        var mask = 1 << (i - 1);
-	        if ((x & mask) != 0) {
-	            digit++;
-	        }
-	        if ((y & mask) != 0) {
-	            digit++;
-	            digit++;
-	        }
-	        quadKey.push(digit);
-	    }
-	    return quadKey.join('');
+    let quadKey = [];
+    for (let i = z; i > 0; i--) {
+      let digit = '0';
+      let mask = 1 << (i - 1);
+      if ((x & mask) != 0) {
+        digit++;
+      }
+      if ((y & mask) != 0) {
+        digit++;
+        digit++;
+      }
+      quadKey.push(digit);
+    }
+    return quadKey.join('');
 	}
 
 	function initializeDownloader() {
@@ -524,21 +516,18 @@ $(function() {
 
 		$("#download-button").click(startDownloading)
 		$("#stop-button").click(stopDownloading)
-
-		var timestamp = Date.now().toString();
-		//$("#output-directory-box").val(timestamp)
 	}
 
 	function showTinyTile(base64) {
-		var currentImages = $(".tile-strip img");
+		let currentImages = $(".tile-strip img");
 
-		for(var i = 4; i < currentImages.length; i++) {
+		for(let i = 4; i < currentImages.length; i++) {
 			$(currentImages[i]).remove();
 		}
 
-		var image = $("<img/>").attr('src', "data:image/png;base64, " + base64)
+		let image = $("<img/>").attr('src', "data:image/png;base64, " + base64)
 
-		var strip = $(".tile-strip");
+		let strip = $(".tile-strip");
 		strip.prepend(image)
 	}
 
@@ -560,23 +549,23 @@ $(function() {
 		clearLogs();
 		M.Toast.dismissAll();
 
-		var timestamp = new Date().toISOString().replace(/[^\w]/,'_');
+		let timestamp = new Date().toISOString().replace(/[^\w]/,'_');
 
-		var allTiles = getAllGridTiles();
+		let allTiles = getAllGridTiles();
 		updateProgress(0, allTiles.length);
 
-		var numThreads = parseInt($("#parallel-threads-box").val());
-		var outputDirectory = $("#output-directory-box").val();
-		var outputFile = $("#output-file-box").val();
-		var outputType = $("#output-type").val();
-		var outputScale = $("#output-scale").val();
-		var source = $("#source-box").val()
+		let numThreads = parseInt($("#parallel-threads-box").val());
+		let outputDirectory = $("#output-directory-box").val();
+		let outputFile = $("#output-file-box").val();
+		let outputType = $("#output-type").val();
+		let outputScale = $("#output-scale").val();
+		let source = $("#source-box").val()
 
-		var bounds = getBounds();
-		var boundsArray = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat]
-		var centerArray = [bounds.getCenter().lng, bounds.getCenter().lat, getMaxZoom()]
+		let bounds = getBounds();
+		let boundsArray = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat]
+		let centerArray = [bounds.getCenter().lng, bounds.getCenter().lat, getMaxZoom()]
 		
-		var data = new FormData();
+		let data = new FormData();
 		data.append('minZoom', getMinZoom())
 		data.append('maxZoom', getMaxZoom())
 		data.append('outputDirectory', outputDirectory)
@@ -588,7 +577,7 @@ $(function() {
 		data.append('bounds', boundsArray.join(","))
 		data.append('center', centerArray.join(","))
 
-		var request = await $.ajax({
+		await $.ajax({
 			url: "/start-download",
 			async: true,
 			timeout: 30 * 1000,
@@ -600,17 +589,17 @@ $(function() {
 		})
 
 		let i = 0;
-		var iterator = async.eachLimit(allTiles, numThreads, function(item, done) {
+		async.eachLimit(allTiles, numThreads, function(item, done) {
 
 			if(cancellationToken) {
 				return;
 			}
 
-			var boxLayer = previewRect(item);
+			let boxLayer = previewRect(item);
 
-			var url = "/download-tile";
+			let url = "/download-tile";
 
-			var data = new FormData();
+			let data = new FormData();
 			data.append('x', item.x)
 			data.append('y', item.y)
 			data.append('z', item.z)
@@ -624,13 +613,13 @@ $(function() {
 			data.append('bounds', boundsArray.join(","))
 			data.append('center', centerArray.join(","))
 
-			var request = $.ajax({
+			let request = $.ajax({
 				"url": url,
 				async: true,
 				timeout: 30 * 1000,
 				type: "post",
-			    contentType: false,
-			    processData: false,
+        contentType: false,
+        processData: false,
 				data: data,
 				dataType: 'json',
 			}).done(function(data) {
@@ -672,7 +661,7 @@ $(function() {
 
 		}, async function(err) {
 
-			var request = await $.ajax({
+			await $.ajax({
 				url: "/end-download",
 				async: true,
 				timeout: 30 * 1000,
@@ -692,7 +681,7 @@ $(function() {
 	}
 
 	function updateProgress(value, total) {
-		var progress = value / total;
+		let progress = value / total;
 
 		bar.animate(progress);
 		bar.setText(Math.round(progress * 100) + '<span>%</span>');
@@ -706,22 +695,21 @@ $(function() {
 
 	function logItemRaw(text) {
 
-		var logger = $('#log-view');
+		let logger = $('#log-view');
 		logger.val(logger.val() + '\n' + text);
 
 		logger.scrollTop(logger[0].scrollHeight);
 	}
 
 	function clearLogs() {
-		var logger = $('#log-view');
+		let logger = $('#log-view');
 		logger.val('');
 	}
 
 	function stopDownloading() {
 		cancellationToken = true;
 
-		for(var i =0 ; i < requests.length; i++) {
-			var request = requests[i];
+		for(const request of requests) {
 			try {
 				request.abort();
 			} catch(e) {
