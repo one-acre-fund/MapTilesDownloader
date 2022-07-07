@@ -111,7 +111,14 @@ $(function () {
   function initializeMap() {
     mapboxgl.accessToken =
       "pk.eyJ1IjoieWFubi1qb3VhbmlxdWUiLCJhIjoiY2trcmF5NTJuMHY1bTJ1czFnN3AzbXFqbSJ9.1ig7hrDDxcwaRnrP9Y7fpg";
-    const mb_sources = {};
+
+    // Add a dummy custom source that we will update for custom URLs
+    const mb_sources = {
+      custom: {
+        type: "raster",
+        tiles: [sources[0].url],
+      },
+    };
     sources.forEach(function (source) {
       if (source.url) {
         mb_sources[source.name] = {
@@ -163,14 +170,14 @@ $(function () {
     });
   }
 
-  function updateLayer(url) {
-    if (map) {
+  function updateLayer(sourceName) {
+    if (map && map.getSource(sourceName)) {
       if (map.getLayer("tiles")) map.removeLayer("tiles");
       map.addLayer(
         {
           id: "tiles",
           type: "raster",
-          source: url,
+          source: sourceName,
         },
         "base"
       );
@@ -194,17 +201,23 @@ $(function () {
       item.find("a").text(name);
 
       item.click(function () {
-        let url = $(this).attr("data-url");
-        $("#source-box").val(url);
-        let name = $(this).find("a").text();
-        updateLayer(name);
+        $("#source-box").val($(this).attr("data-url"));
+        updateLayer($(this).find("a").text());
       });
 
       dropdown.append(item);
     }
 
+    // This will only get triggered on manual URL updates
     $("#source-box").on("change", function () {
-      updateLayer($(this).val());
+      // Update the source URL
+      let customUrl = $(this).val();
+      if (map) {
+        const sourceObject = map.getSource("custom");
+        sourceObject.tiles = [customUrl];
+      }
+      // Show it
+      updateLayer("custom");
     });
   }
 
